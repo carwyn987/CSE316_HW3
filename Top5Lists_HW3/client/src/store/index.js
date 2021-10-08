@@ -17,7 +17,8 @@ export const GlobalStoreActionType = {
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
-    SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE"
+    SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    INCREMENT_NEW_LIST_COUNTER: "INCREMENT_NEW_LIST_COUNTER"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -96,6 +97,17 @@ export const useGlobalStore = () => {
                     listMarkedForDeletion: null
                 });
             }
+            // INCREMENT COUNTER
+            case GlobalStoreActionType.INCREMENT_NEW_LIST_COUNTER: {
+                return setStore({
+                    idNamePairs: payload.idNamePairs,
+                    currentList: payload.top5List,
+                    newListCounter: store.newListCounter+1,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null
+                });
+            }
             default:
                 return store;
         }
@@ -143,6 +155,44 @@ export const useGlobalStore = () => {
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
         });
+    }
+
+    store.addList = function (payload) {
+        // Create and send a HTTP Post request to the server with name: "UntitledN", items: "?, ?, ..."
+        async function createNewList() {
+            let response = await api.createTop5List({
+                "name": "Untitled" + store.newListCounter,
+                "items": [
+                    "?",
+                    "?",
+                    "?",
+                    "?",
+                    "?"
+                ]
+            });
+            if(response.data.success){
+                console.log(response.data.top5List);
+                console.log(response.data.top5List._id);
+
+                // Update list pairs
+                async function getListPairs(top5List) {
+                    let response = await api.getTop5ListPairs();
+                    if (response.data.success) {
+                        let pairsArray = response.data.idNamePairs;
+                        storeReducer({
+                            type: GlobalStoreActionType.INCREMENT_NEW_LIST_COUNTER,
+                            payload: {
+                                idNamePairs: pairsArray,
+                                top5List: top5List
+                            }
+                        });
+                        console.log("newListCounter: " + store.newListCounter)
+                    }
+                }
+                getListPairs(response.data.top5List)
+            }
+        }
+        createNewList();
     }
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
