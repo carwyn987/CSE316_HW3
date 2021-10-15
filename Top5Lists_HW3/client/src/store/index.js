@@ -171,8 +171,8 @@ export const useGlobalStore = () => {
                 ]
             });
             if(response.data.success){
-                console.log(response.data.top5List);
-                console.log(response.data.top5List._id);
+                // console.log(response.data.top5List);
+                // console.log(response.data.top5List._id);
 
                 // Update list pairs
                 async function getListPairs(top5List) {
@@ -186,10 +186,14 @@ export const useGlobalStore = () => {
                                 top5List: top5List
                             }
                         });
-                        console.log("newListCounter: " + store.newListCounter)
+                        // console.log("newListCounter: " + store.newListCounter)
+                        store.history.push("/top5list/" + top5List._id);
                     }
                 }
+                // await api.updateTop5ListById(response.data.top5List._id, response.data.top5List);
+                
                 getListPairs(response.data.top5List)
+                // store.setCurrentList(response.data.top5List._id);
             }
         }
         createNewList();
