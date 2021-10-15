@@ -18,6 +18,7 @@ export const GlobalStoreActionType = {
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
     INCREMENT_NEW_LIST_COUNTER: "INCREMENT_NEW_LIST_COUNTER"
 }
 
@@ -97,6 +98,19 @@ export const useGlobalStore = () => {
                     listMarkedForDeletion: null
                 });
             }
+            
+            // START EDITING A LIST ITEM
+            case GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: true,
+                    listMarkedForDeletion: null
+                });
+            }
+
             // INCREMENT COUNTER
             case GlobalStoreActionType.INCREMENT_NEW_LIST_COUNTER: {
                 return setStore({
@@ -287,6 +301,13 @@ export const useGlobalStore = () => {
     store.setIsListNameEditActive = function () {
         storeReducer({
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
+            payload: null
+        });
+    }
+
+    store.setIsItemEditActive = function () {
+        storeReducer({
+            type: GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE,
             payload: null
         });
     }

@@ -240,6 +240,26 @@ input {
   color: var(--swatch-neutral);
 }
 
+.input-card {
+  display:flex;
+  align-items: center;
+  font-size: 24pt;
+  height:20%;
+  text-align: left;
+  width:95%;
+  padding-left:5%;
+
+  /* font-size: 18pt;
+  margin: 15px;
+  padding: 10px;
+  height: 10%;
+  border-radius: 25px;
+  border: 1px solid #999999;
+  margin-left: 60px;
+  background-color: white;
+  color: black; */
+}
+
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */
 
 .modal {
