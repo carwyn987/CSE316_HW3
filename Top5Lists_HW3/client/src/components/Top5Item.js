@@ -11,9 +11,10 @@ function Top5Item(props) {
     const [draggedTo, setDraggedTo] = useState(0);
     const [ editActive, setEditActive ] = useState(false);
     const [ text, setText ] = useState("");
+    const [curElEdit, setCurElEdit] = useState({});
 
     function handleToggleEdit(event){
-        console.log(event)
+        setCurElEdit(event.target);
         event.stopPropagation();
         toggleEdit();
     }
@@ -28,8 +29,7 @@ function Top5Item(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            //store.changeListName(id, text);
+            store.editListItem(curElEdit.id.slice(-1), text);
             toggleEdit();
         }
     }
@@ -93,7 +93,7 @@ function Top5Item(props) {
         >
             <input
                 type="button"
-                id={"edit-item-" + index + 1}
+                id={"edit-item-" + index}
                 className="list-card-button"
                 onClick={handleToggleEdit}
                 value={"\u270E"}

@@ -2,6 +2,7 @@ import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import api from '../api'
 import MoveItem_Transaction from '../transactions/MoveItem_Transaction'
+import ChangeItem_Transaction from '../transactions/ChangeItem_Transaction'
 export const GlobalStoreContext = createContext({});
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -163,6 +164,25 @@ export const useGlobalStore = () => {
         asyncChangeListName(id);
     }
 
+    // THIS FUNCTION EDITS A LIST AND UPDATES
+    store.editListItem = function (id, text) {
+        // Only if the text of an item was changed
+        if(text != ""){
+            async function getListAndEditVals(idOfList, id, text) {
+                // Get the top5List from id
+                let response = await api.getTop5ListById(idOfList);
+                if (response.data.success) {
+                    let data = response.data.top5List;
+
+                    // Transaction
+                    store.addEditItemTransaction(id, data.items[id], text);
+
+                }
+            }
+            getListAndEditVals(store.currentList._id, id, text);
+        }
+    }
+
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
         storeReducer({
@@ -257,6 +277,11 @@ export const useGlobalStore = () => {
         let transaction = new MoveItem_Transaction(store, start, end);
         tps.addTransaction(transaction);
     }
+    store.addEditItemTransaction = function (id, oldText, newText){
+        let transaction = new ChangeItem_Transaction(store, id, oldText, newText);
+        tps.addTransaction(transaction);
+    }
+
     store.moveItem = function (start, end) {
         start -= 1;
         end -= 1;
@@ -278,6 +303,34 @@ export const useGlobalStore = () => {
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
     }
+
+    store.editItemUnRe = function (index, oldText, newText){
+        async function getListAndEditVals(idOfList, id, text) {
+            // Get the top5List from id
+            let response = await api.getTop5ListById(idOfList);
+            if (response.data.success) {
+                let data = response.data.top5List;
+                
+                // Edit items
+                data.items[id] = text;
+
+                async function editVals(idOfList, data) {
+                    let response = await api.updateTop5ListById(idOfList, data)
+                    if (response.data.success) {
+                        // Update current list to show update
+                        storeReducer({
+                            type: GlobalStoreActionType.SET_CURRENT_LIST,
+                            payload: data
+                        });
+                        // store.history.push("/top5list/" + top5List._id);
+                    }
+                }
+                editVals(idOfList, data);
+            }
+        }
+        getListAndEditVals(store.currentList._id, index, newText);
+    }
+
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
             const response = await api.updateTop5ListById(store.currentList._id, store.currentList);
