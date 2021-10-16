@@ -16,7 +16,7 @@ function ListCard(props) {
     const { idNamePair, selected } = props;
 
     function handleLoadList(event) {
-        if (!event.target.disabled) {
+        if (!event.target.disabled && event.target.nodeName != 'INPUT') {
             let _id = event.target.id;
             if (_id.indexOf('list-card-text-') >= 0)
                 _id = ("" + _id).substring("list-card-text-".length);
@@ -24,6 +24,11 @@ function ListCard(props) {
             // CHANGE THE CURRENT LIST
             store.setCurrentList(_id);
         }
+    }
+
+    function handleDelete(event) {
+        // console.log(event.target.parentNode.id);
+        store.setModalVisable(event.target.parentNode.id);
     }
 
     function handleToggleEdit(event) {
@@ -76,6 +81,7 @@ function ListCard(props) {
                 type="button"
                 id={"delete-list-" + idNamePair._id}
                 className="list-card-button"
+                onClick={handleDelete}
                 value={"\u2715"}
             />
             <input
@@ -97,6 +103,7 @@ function ListCard(props) {
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
                 defaultValue={idNamePair.name}
+                autoFocus
             />;
     }
     return (
