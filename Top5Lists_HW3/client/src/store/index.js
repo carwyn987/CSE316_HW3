@@ -35,8 +35,8 @@ export const useGlobalStore = () => {
         idNamePairs: [],
         currentList: null,
         newListCounter: 0,
-        listNameActive: false,
-        itemActive: false,
+        isListNameEditActive: false,
+        isItemEditActive: -1,
         listMarkedForDeletion: null
     });
 
@@ -52,7 +52,7 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: store.isItemEditActive,
                     listMarkedForDeletion: null
                 });
             }
@@ -63,7 +63,7 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: store.isItemEditActive,
                     listMarkedForDeletion: null
                 })
             }
@@ -74,7 +74,7 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: store.isItemEditActive,
                     listMarkedForDeletion: null
                 });
             }
@@ -85,7 +85,7 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: -1,
                     listMarkedForDeletion: null
                 });
             }
@@ -96,7 +96,7 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: true,
-                    isItemEditActive: false,
+                    isItemEditActive: store.isItemEditActive,
                     listMarkedForDeletion: null
                 });
             }
@@ -108,7 +108,7 @@ export const useGlobalStore = () => {
                     currentList: store.currentList,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: true,
+                    isItemEditActive: payload,
                     listMarkedForDeletion: null
                 });
             }
@@ -120,7 +120,7 @@ export const useGlobalStore = () => {
                     currentList: payload.top5List,
                     newListCounter: store.newListCounter+1,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: store.isItemEditActive,
                     listMarkedForDeletion: null
                 });
             }
@@ -132,7 +132,7 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: store.isItemEditActive,
                     listMarkedForDeletion: payload
                 });
             }
@@ -427,10 +427,10 @@ export const useGlobalStore = () => {
         });
     }
 
-    store.setIsItemEditActive = function () {
+    store.setIsItemEditActive = function (index) {
         storeReducer({
             type: GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE,
-            payload: null
+            payload: index
         });
     }
 

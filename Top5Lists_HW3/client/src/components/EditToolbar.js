@@ -38,6 +38,13 @@ function EditToolbar() {
         redoEnabledButtonClass = "top5-button";
     }
 
+    // if edit in progress
+    if(store.isItemEditActive != -1){
+        undoEnabledButtonClass += " disabled";
+        redoEnabledButtonClass += " disabled";
+        enabledButtonClass += " disabled";
+    }
+
     function handleUndo() {
         store.undo();
     }
@@ -52,6 +59,7 @@ function EditToolbar() {
     if (store.isListNameEditActive) {
         editStatus = true;
     }
+
     return (
         <div id="edit-toolbar">
             <div

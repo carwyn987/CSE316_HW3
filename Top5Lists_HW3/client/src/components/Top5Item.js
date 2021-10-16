@@ -22,7 +22,9 @@ function Top5Item(props) {
     function toggleEdit() {
         let newActive = !editActive;
         if (newActive) {
-            store.setIsItemEditActive(); 
+            store.setIsItemEditActive(index);
+        }else{
+            store.setIsItemEditActive(-1); 
         }
         setEditActive(newActive);
     }
@@ -35,25 +37,33 @@ function Top5Item(props) {
     }
 
     function handleUpdateText(event) {
-        setText(event.target.value );
+        setText(event.target.value);
     }
 
     function handleDragStart(event) {
-        event.dataTransfer.setData("item", event.target.id);
+        if(store.isItemEditActive === -1){
+            event.dataTransfer.setData("item", event.target.id);
+        }
     }
 
     function handleDragOver(event) {
-        event.preventDefault();
+        if(store.isItemEditActive === -1){
+            event.preventDefault();
+        }
     }
 
     function handleDragEnter(event) {
-        event.preventDefault();
-        setDraggedTo(true);
+        if(store.isItemEditActive === -1){
+            event.preventDefault();
+            setDraggedTo(true);
+        }
     }
 
     function handleDragLeave(event) {
-        event.preventDefault();
-        setDraggedTo(false);
+        if(store.isItemEditActive === -1){
+            event.preventDefault();
+            setDraggedTo(false);
+        }
     }
 
     function handleDrop(event) {
@@ -69,15 +79,15 @@ function Top5Item(props) {
         store.addMoveItemTransaction(sourceId, targetId);
     }
 
-    let cardStatus = false;
-    if (store.isItemEditActive) {
-        cardStatus = true;
-    }
-
     let { index } = props;
     let itemClass = "top5-item";
     if (draggedTo) {
         itemClass = "top5-item-dragged-to";
+    }
+
+    let classNameVal = "list-card-button";
+    if(store.isItemEditActive != -1){
+        classNameVal += " disabled"
     }
 
     let cardElement = 
@@ -94,7 +104,7 @@ function Top5Item(props) {
             <input
                 type="button"
                 id={"edit-item-" + index}
-                className="list-card-button"
+                className={classNameVal}
                 onClick={handleToggleEdit}
                 value={"\u270E"}
             />
