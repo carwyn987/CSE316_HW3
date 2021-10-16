@@ -12,6 +12,32 @@ function EditToolbar() {
     const history = useHistory();
 
     let enabledButtonClass = "top5-button";
+    let undoEnabledButtonClass = "top5-button";
+    let redoEnabledButtonClass = "top5-button";
+
+    // if edit view
+    if(!store.currentList){
+        undoEnabledButtonClass += " disabled";
+        redoEnabledButtonClass += " disabled";
+        enabledButtonClass += " disabled";
+    }else{
+        enabledButtonClass = "top5-button";
+    }
+
+    // if undo available
+    if(!store.undoAvailable()){
+        undoEnabledButtonClass += " disabled";
+    }else{
+        undoEnabledButtonClass = "top5-button";
+    }
+
+    // if redo available
+    if(!store.redoAvailable()){
+        redoEnabledButtonClass += " disabled";
+    }else{
+        redoEnabledButtonClass = "top5-button";
+    }
+
     function handleUndo() {
         store.undo();
     }
@@ -32,14 +58,14 @@ function EditToolbar() {
                 disabled={editStatus}
                 id='undo-button'
                 onClick={handleUndo}
-                className={enabledButtonClass}>
+                className={undoEnabledButtonClass}>
                 &#x21B6;
             </div>
             <div
                 disabled={editStatus}
                 id='redo-button'
                 onClick={handleRedo}
-                className={enabledButtonClass}>
+                className={redoEnabledButtonClass}>
                 &#x21B7;
             </div>
             <div

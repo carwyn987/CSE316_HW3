@@ -49,7 +49,7 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
-                    currentList: payload.top5List,
+                    currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -201,10 +201,19 @@ export const useGlobalStore = () => {
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
+        tps.clearAllTransactions()
         storeReducer({
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
         });
+    }
+
+    store.undoAvailable = function () {
+        return tps.hasTransactionToUndo();
+    }
+
+    store.redoAvailable = function () {
+        return tps.hasTransactionToRedo();
     }
 
     store.addList = function (payload) {
@@ -221,8 +230,6 @@ export const useGlobalStore = () => {
                 ]
             });
             if(response.data.success){
-                // console.log(response.data.top5List);
-                // console.log(response.data.top5List._id);
 
                 // Update list pairs
                 async function getListPairs(top5List) {
